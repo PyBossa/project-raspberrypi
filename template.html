@@ -9,12 +9,25 @@
   padding: 25px;
   color: white;
   text-transform: uppercase;
-  animation: slideDown 2.5s 0.0s 1 ease forwards;
+  transform: translateY(-150px);
+}
+
+.show-notification {
+    animation: slideDown 0.5s 0.0s 1 ease forwards;
+}
+
+.hide-notification {
+    animation: slideUp 1s 0.0s 1 ease forwards;
 }
 
 @keyframes slideDown {
-    0%, 100% { transform: translateY(-150px); }
-    10%, 90% { transform: translateY(0px); }
+    0% {transform: translateY(-150px);}
+    100% { transform: translateY(0px); }
+}
+
+@keyframes slideUp {
+    0% {transform: translateY(0px);}
+    100% { transform: translateY(-150px); }
 }
 </style>
 <div class="row">
@@ -164,11 +177,18 @@ function i18n_translate() {
     }
 }
 
-function notify(text){
+function notify(text, showNotification){
+    $("#notification").remove();
     var div = $("<div/>");
     div.attr("id", "notification");
     div.html(text);
-    $("body").prepend(div);
+    if (showNotification === true) {
+        div.addClass("show-notification");
+        $("body").prepend(div);
+    }
+    else {
+        $("#notification").addClass("hide-notification");
+    }
 }
 
 pybossa.taskLoaded(function(task, deferred) {
@@ -177,8 +197,8 @@ pybossa.taskLoaded(function(task, deferred) {
         var img = $('<img />');
         img.load(function() {
             // continue as soon as the image is loaded
+            notify("Loading next photo...", false);
             deferred.resolve(task);
-            $("#notification").remove();
         });
         img.attr('src', task.info.url_b);
         img.attr('id', 'photo-' + task.id);
@@ -201,7 +221,7 @@ pybossa.presentTask(function(task, deferred) {
             if (typeof answer != 'undefined') {
                 //console.log(answer);
                 pybossa.saveTask(task.id, answer).done(function() {
-                    notify("Loading next photo...");
+                    notify("Loading next photo...", true);
                     $('#photo-' + task.id).addClass('animated bounceOutLeft');
                     $('#photo-' + task.id).one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
                         deferred.resolve();
