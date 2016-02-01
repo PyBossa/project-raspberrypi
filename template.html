@@ -1,3 +1,22 @@
+<style>
+#notification {
+  position: absolute;
+  top:0;
+  z-index: 10000;
+  background: rgba(0,0,0,0.8);
+  width: 100%;
+  text-align: center;
+  padding: 25px;
+  color: white;
+  text-transform: uppercase;
+  animation: slideDown 2.5s 0.0s 1 ease forwards;
+}
+
+@keyframes slideDown {
+    0%, 100% { transform: translateY(-150px); }
+    10%, 90% { transform: translateY(0px); }
+}
+</style>
 <div class="row">
     <!-- Success and Error Messages for the user --> 
     <div class="col-md-6 col-md-offset-2" style="height:50px">
@@ -145,6 +164,13 @@ function i18n_translate() {
     }
 }
 
+function notify(text){
+    var div = $("<div/>");
+    div.attr("id", "notification");
+    div.html(text);
+    $("body").prepend(div);
+}
+
 pybossa.taskLoaded(function(task, deferred) {
     if ( !$.isEmptyObject(task) ) {
         // load image from flickr
@@ -152,6 +178,7 @@ pybossa.taskLoaded(function(task, deferred) {
         img.load(function() {
             // continue as soon as the image is loaded
             deferred.resolve(task);
+            $("#notification").remove();
         });
         img.attr('src', task.info.url_b);
         img.attr('id', 'photo-' + task.id);
@@ -174,6 +201,7 @@ pybossa.presentTask(function(task, deferred) {
             if (typeof answer != 'undefined') {
                 //console.log(answer);
                 pybossa.saveTask(task.id, answer).done(function() {
+                    notify("Loading next photo...");
                     $('#photo-' + task.id).addClass('animated bounceOutLeft');
                     $('#photo-' + task.id).one('webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend', function(){
                         deferred.resolve();
