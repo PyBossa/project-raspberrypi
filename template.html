@@ -3,7 +3,7 @@
   position: fixed;
   top:0;
   z-index: 10000;
-  background: rgba(0,0,0,0.8);
+  background: rgba(0,0,0,0.9);
   width: 100%;
   text-align: center;
   padding: 25px;
@@ -29,44 +29,30 @@
     0% {transform: translateY(0px);}
     100% { transform: translateY(-150px); }
 }
-</style>
-<div class="row">
-    <!-- Success and Error Messages for the user --> 
-    <div class="col-md-6 col-md-offset-2" style="height:50px">
-        <div id="success" class="alert alert-success" style="display:none;">
-            <a class="close">×</a>
-            <strong id="i18n_welldone">Well done!</strong> <span id="i18n_welldone_text">Your answer has been saved</span>
-        </div>
-        <div id="loading" class="alert alert-info" style="display:none;">
-            <a class="close">×</a>
-            <span id="i18n_loading_next_task">Loading next task...</span>
-        </div>
-        <div id="taskcompleted" class="alert alert-info" style="display:none;">
-            <strong id="i18n_task_completed">The task has been completed!</strong> <span id="i18n_thanks">Thanks a lot!</span>
-        </div>
-        <div id="finish" class="alert alert-success" style="display:none;">
-            <strong id="i18n_congratulations">Congratulations!</strong> <span id="i18n_congratulations_text">You have participated in all available tasks!</span>
-            <br/>
-            <div class="alert-actions">
-                <a class="btn small" href="/">Go back</a>
-                <a class="btn small" href="/app">or, Check other projects</a>
-            </div>
-        </div>
-        <div id="error" class="alert alert-danger" style="display:none;">
-            <a class="close">×</a>
-            <strong>Error!</strong> Something went wrong, please contact the site administrators
-        </div>
-    </div> <!-- End Success and Error Messages for the user -->
-</div> <!-- End of Row -->
 
-<!--
-    Task DOM for loading the Flickr Images
-    It uses the class="skeleton" to identify the elements that belong to the
-    task.
--->
+.tutorial {
+    position: fixed;
+    top: 25%;
+    right: -25px;
+    -webkit-transform: rotate(-90deg);
+    -ms-transform: rotate(-90deg);
+    transform: rotate(-90deg);
+    z-index: 99999;
+    }
+@media (max-width:320px) {
+    .tutorial {
+        top: 35%;
+    }
+}
+</style>
+
+<div class="col-md-2 pull-right ">
+    <a class="btn btn-primary btn-large tutorial" href="/project/raspberrypi/tutorial"><i class="icon-question-sign"></i> Tutorial</a>
+</div>
+
 <div class="row skeleton"> <!-- Start Skeleton Row-->
-    <div class="col-xs-12 col-md-6 col-md-offset-3" style="text-align: center;"><!-- Start of Question and Submission DIV (column) -->
-        <h2 id="question"><span id="i18n_question">Do you see an insect in this picture?</span></h2> <!-- The question will be loaded here -->
+    <div class="col-xs-12 col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3" style="text-align: center;"><!-- Start of Question and Submission DIV (column) -->
+        <h2 id="question"><span id="i18n_question">Do you see an insect in this photo?</span></h2> <!-- The question will be loaded here -->
         <div id="answer" style="text-align: center;"> <!-- Start DIV for the submission buttons -->
             <!-- If the user clicks this button, the saved answer will be value="No"-->
             <button class="btn btn-answer" value='no'>No</button>
@@ -80,7 +66,7 @@
             <button class="btn btn-answer" value='notKnown'><span id="i18n_i_dont_know">I don't know</span></button>
         </div><!-- End of DIV for the submission buttons -->
     </div><!-- End of Question and Submission DIV (column) -->
-    <div id="photo-frame" class="col-xs-12 col-md-6 col-md-offset-3"><!-- Start of Photo DIV (column) -->
+    <div id="photo-frame" class="col-xs-12 col-sm-6 col-sm-offset-3 col-md-6 col-md-offset-3"><!-- Start of Photo DIV (column) -->
         <img id="photo" src="http://i.imgur.com/GeHxzb7.png" class="img-responsive">
     </div><!-- End of Photo DIV (columnt) -->
     <div class="col-xs-12 col-md-6 col-md-offset-3" style="text-align:center;">
@@ -213,6 +199,7 @@ pybossa.taskLoaded(function(task, deferred) {
 pybossa.presentTask(function(task, deferred) {
     if ( !$.isEmptyObject(task) ) {
         i18n_translate();
+        window.scrollTo(0, $("#question").offset().top - 85);
         $('#photo-frame').html('').append(task.info.image);
         $('#photo-' + task.id).addClass('animated bounceInRight');
         $('#task-id').html(task.id);
@@ -227,22 +214,19 @@ pybossa.presentTask(function(task, deferred) {
                         deferred.resolve();
                         });
                 });
-                $("#loading").fadeIn(500);
                 if ($("#disqus_thread").is(":visible")) {
                     $('#disqus_thread').toggle();
                     $('.btn-disqus').toggle();
                 }
             }
             else {
-                $("#error").show();
+                notify("Something went wrong. Contact info@crowdcrafting.org", true);
             }
         });
-        $("#loading").hide();
     }
     else {
         $(".skeleton").hide();
-        $("#loading").hide();
-        $("#finish").fadeIn(500);
+        notify("You have contributed to all available tasks. Thanks a lot", true);
     }
 });
 
