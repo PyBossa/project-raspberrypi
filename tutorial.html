@@ -1,0 +1,58 @@
+<div class="row">
+    <div class="col-md-12">
+        <div id="modal" class="modal hide fade">
+            <div class="modal-header">
+                <h3>Tutorial</h3>
+            </div>
+            <div id="0" class="modal-body" style="display:none">
+                <p><strong>Hi!</strong> The goal of this project is to find out if outside a window in a house -located in Madrid, Spain- there is a hive of wasps or bees.</p> 
+                <p>The issue is that, this house is 5th floor, so it's not easy to get out and see if there is a hive or not. Thererfore, we decided to use the Raspberry Pi PyBossa integration to find it out, taking a photo every 5 minutes.</p>
+            </div>
+            <div id="1" class="modal-body" style="display:none">
+                <p>The project is really simple. It loads a photo taken using a Raspberry Pi camera in that window and asks you this question: <strong>Do you see an insect in this photo?</strong></p>
+                <p>You will have 5 possible answers:
+                <ul>
+                    <li>No,</li>
+                    <li>Yes! A Wasp</li>
+                    <li>Yes! A Bee</li>
+                    <li>No photo</li>
+                    <li>I don't know</li>
+                </ul>
+                </p>
+                <p>All you have to do is to click in one of the possible answers and you will be done. The project has always new photos to analyze, as the Raspberry Pi takes a picture every 5 minutes. Thus, if you like the project, come back whenever you want!</p>
+            </div>
+            <div class="modal-footer">
+                <a id="prevBtn" href="#" onclick="showStep('prev')" class="btn">Previous</a>
+                <a id="nextBtn" href="#" onclick="showStep('next')" class="btn btn-success">Next</a>
+                <a id="startContrib" href="../raspberrypi/newtask" class="btn btn-primary" style="display:none"><i class="fa fa-thumbs-o-up"></i> Find the bug!</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var step = -1;
+    function showStep(action) {
+        $("#" + step).hide();
+        if (action == 'next') {
+            step = step + 1;
+        }
+        if (action == 'prev') {
+            step = step - 1;
+        }
+        if (step == 0) {
+            $("#prevBtn").hide();
+        }
+        else {
+            $("#prevBtn").show();
+        }
+
+        if (step == 1 ) {
+            $("#nextBtn").hide();
+            $("#startContrib").show();
+        }
+        $("#" + step).show();
+    }
+
+    showStep('next');
+    $("#modal").modal('show');
+</script>
